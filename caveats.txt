@@ -1,0 +1,19 @@
+When you define the @JMSDestinationDefinition for the MBD, you also need to provide the destinationName property.
+This name is then used by Producers and Consumers to look-up the destination.
+
+
+@MessageDriven(mappedName = "jms/javaee7/Topic", activationConfig = {
+@ActivationConfigProperty(propertyName  = "acknowledgeMode",
+                          propertyValue = "Auto-acknowledge"),
+        @ActivationConfigProperty(propertyName  = "messageSelector",
+                                  propertyValue = "orderAmount > 1000")
+})
+@JMSConnectionFactoryDefinition (name = "jms/javaee7/ConnectionFactory", className = "javax.jms.ConnectionFactory")
+@JMSDestinationDefinition (name = "jms/javaee7/Topic", className = "javax.jms.Topic", interfaceName = "javax.jms.Topic", 
+                           destinationName = "Topic1") // <----------------destinationName is Topic1
+public class ExpensiveOrderMDB implements MessageListener {
+
+
+// Looks up the administered objects
+ConnectionFactory connectionFactory = (ConnectionFactory) jndiContext.lookup("jms/javaee7/ConnectionFactory");
+Destination topic = (Destination) jndiContext.lookup("Topic1"); //<-------------------destinationName used by Producer for lookup
