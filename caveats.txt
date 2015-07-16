@@ -1,3 +1,6 @@
+Useful Info
+http://docs.oracle.com/cd/E19587-01/821-0029/index.html
+
 When you define the @JMSDestinationDefinition for the MBD, you also need to provide the destinationName property.
 This name is then used by Producers and Consumers to look-up the destination.
 
