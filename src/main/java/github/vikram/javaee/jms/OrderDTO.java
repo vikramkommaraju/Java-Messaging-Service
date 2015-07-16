@@ -5,12 +5,20 @@ import java.util.Date;
 
 public class OrderDTO implements Serializable {
 	 
-	  private Long orderId;
+	  /**
+	 * 
+	 */
+	private static final long serialVersionUID = -7007762020997397531L;
+	private Long orderId;
 	  private Date creationDate;
 	  private String customerName;
 	  private Float totalAmount ;
 	  
-	public OrderDTO(long l, Date date, String string, Float totalAmount2) {
+	public OrderDTO(long orderId, Date creationDate, String customerName, Float totalAmount) {
+		this.orderId = orderId;
+		this.creationDate = creationDate;
+		this.customerName = customerName;
+		this.totalAmount = totalAmount;
 		
 	}
 	
@@ -38,6 +46,14 @@ public class OrderDTO implements Serializable {
 	public void setTotalAmount(Float totalAmount) {
 		this.totalAmount = totalAmount;
 	}
+
+	@Override
+	public String toString() {
+		return "OrderDTO [orderId=" + orderId + ", creationDate="
+				+ creationDate + ", customerName=" + customerName
+				+ ", totalAmount=" + totalAmount + "]";
+	}
 	 
+	
 	    
 }
