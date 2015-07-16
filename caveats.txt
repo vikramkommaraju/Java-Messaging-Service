@@ -1,0 +1,53 @@
+Useful Info
+http://docs.oracle.com/cd/E19587-01/821-0029/index.html
+
+
+When working with queues, you can only have one receiver at a time. So you can either run the GF server
+and invoke ExpensiveOrderMDB or use the standalone OrderConsumer java class
+
+When you define the @JMSDestinationDefinition for the MBD, you also need to provide the destinationName property.
+This name is then used by Producers and Consumers to look-up the destination.
+
+
+@MessageDriven(mappedName = "jms/javaee7/Topic", activationConfig = {
+@ActivationConfigProperty(propertyName  = "acknowledgeMode",
+                          propertyValue = "Auto-acknowledge"),
+        @ActivationConfigProperty(propertyName  = "messageSelector",
+                                  propertyValue = "orderAmount > 1000")
+})
+@JMSConnectionFactoryDefinition (name = "jms/javaee7/ConnectionFactory", className = "javax.jms.ConnectionFactory")
+@JMSDestinationDefinition (name = "jms/javaee7/Topic", className = "javax.jms.Topic", interfaceName = "javax.jms.Topic", 
+                           destinationName = "Topic1") // <----------------destinationName is Topic1
+public class ExpensiveOrderMDB implements MessageListener {
+
+
+// Looks up the administered objects
+ConnectionFactory connectionFactory = (ConnectionFactory) jndiContext.lookup("jms/javaee7/ConnectionFactory");
+Destination topic = (Destination) jndiContext.lookup("Topic1"); //<-------------------destinationName used by Producer for lookup
+
+########Running Produce from command line##############
+When you invoke standalone Producer class from the command line, you need to specify the fully quailified classname as well as the path to glassfish libs
+
+java -cp "target/classes:/Users/vkommara/Downloads/glassfish4/glassfish/lib/*" github.vikram.javaee.jms.OrderProducer 500
+
+For this example we use the Queue as the destination for messages
+#########Difference between Queue and Topic############
+Queue:
+Point-to-point model
+Only one consumer gets the message
+Messages have to be delivered in the order sent
+A JMS queue only guarantees that each message is processed only once.
+
+
+Topic:
+Publish/subscribe model
+Multiple clients subscribe to the message
+There is no guarantee messages have to be delivered in the order sent
+There is no guarantees that each message is processed only once. -- As this can be sensed from the model 
+The Topic, have multiple subscribers and there is a chance that the topic does not know all the subscribers. The destination is unknown.
+The subscriber / JMS client needs to the active when the messages are produced by the producer, unless the subscription was a durable subscription.
+
+
+Refer to Oracle Java EE 6 Tutorial to get more info on MDBs and JMS
+http://docs.oracle.com/cd/E19798-01/821-1841/bnbpk/index.html
+
